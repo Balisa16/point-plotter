@@ -1,4 +1,8 @@
 import src.file as fl
+import src.draw as dr
 
 file_path = 'docs/Track-2.csv'
-fl.read_and_print_csv(file_path)
+rd = fl.CSVreader(file_path)
+ts, x, y, z = rd.get_item()
+draw = dr.Draw(ts, x, y, z)
+draw.draw()
