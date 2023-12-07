@@ -16,7 +16,7 @@ class Draw:
 
         # # x, y, z = zip(self.data)
         ax.plot(self.x, self.y, self.z, marker='o')
-        plt.axis('equal')
+        # plt.axis('equal')
         mng = plt.get_current_fig_manager()
         mng.window.state('zoomed') 
 
