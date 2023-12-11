@@ -12,22 +12,21 @@ class Conv:
         pass
 
     def quaternion_to_euler(self, quaternion):
-        # Create a Rotation object from the quaternion
+
         rotation = Rotation.from_quat(quaternion)
         
-        # Get the Euler angles in degrees
         euler_angles = rotation.as_euler('zyx', degrees=True)
         
         return euler_angles
 
     def euler_to_quaternion(self, roll, pitch, yaw):
-        # Create a Rotation object from Euler angles
+        
         rotation = Rotation.from_euler('zyx', [yaw, pitch, roll], degrees=True)
         
-        # Get the quaternion representation
         quaternion = rotation.as_quat()
         
         return quaternion
+    
     def create_pyramid(self, scale, x, y, z, qw, qx, qy, qz):
         vertices = np.array([
             [0, 0, 0],  # Apex of the pyramid
@@ -73,36 +72,3 @@ class Conv:
         ]
 
         return Poly3DCollection(faces, edgecolor='k', linewidths=1, alpha=0.5, facecolors='cyan')
-
-# # Create a 3D plot
-# fig = plt.figure()
-# ax = fig.add_subplot(111, projection='3d')
-# scale = 0.1
-# x = 0.2
-# y = 0.0
-# z = 0.0
-# qw = 1.0
-# qx = 0.0
-# qy = 0.0
-# qz = 0.0
-
-# # Add the pyramid to the plot
-# cv = Conv()
-# cnt = 0
-# for i in range(36):
-#     quat_result = cv.euler_to_quaternion(i*10, 0, 0)
-#     print(quat_result)
-#     ax.add_collection3d(cv.create_pyramid(scale, cnt, y, z, quat_result[3]*10, quat_result[0]*10, qy, qz))
-#     cnt += 1
-
-# # Set axis labels
-# ax.set_xlabel('X')
-# ax.set_ylabel('Y')
-# ax.set_zlabel('Z')
-
-# # Set aspect ratio to 'equal' for better visualization
-# ax.set_box_aspect([1, 1, 1])
-# plt.xlim([0,36])
-
-# # Show the plot
-# plt.show()
