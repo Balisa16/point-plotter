@@ -37,11 +37,6 @@ class Conv:
             [-.5*scale, -.5*scale, 1*scale]  # Base vertex 4
         ])
 
-        # self.qw = 0.707
-        # self.qx = -0.707
-        # self.qy = 0
-        # self.qz = 0
-
         self.qw = float(qw)
         self.qx = float(qx)
         self.qy = float(qy)
@@ -61,8 +56,6 @@ class Conv:
         view_quat[1] -= 90
  
         quat_result = cv.euler_to_quaternion(view_quat[0], view_quat[2], view_quat[1])
-
-        # print(f"{self.qw} => {quat_result}")
 
         q = np.quaternion(quat_result[0], quat_result[1], quat_result[2], quat_result[3])
         
