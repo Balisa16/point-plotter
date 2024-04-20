@@ -19,11 +19,7 @@ class CSVreader:
         try:
             with open(self.filename, 'r') as file:
                 csv_reader = csv.reader(file)
-                
-                # Read and print headers
                 self.header = next(csv_reader)
-                
-                # Read and print data
                 for row in csv_reader:
                     self.data.append(row)
         except FileNotFoundError:
