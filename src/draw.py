@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
-from src.viewConv import Conv as vw
+from src.view_conv import Conv as vw
 
 class Draw:
     def __init__(self, ts, x, y, z, qw, qx, qy, qz, scale = 0.1):
@@ -27,7 +27,7 @@ class Draw:
             ax.add_collection3d(self.conv.create_pyramid(0.8, i[0], i[1], i[2], i[3], i[4], i[5], i[6]))
         plt.axis('equal')
         mng = plt.get_current_fig_manager()
-        mng.window.state('zoomed') 
+        mng.resize(*mng.window.maxsize())
 
         ax.set_xlabel('X Axis')
         ax.set_ylabel('Y Axis')

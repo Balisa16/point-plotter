@@ -47,14 +47,14 @@ class CSVreader:
         qy = []
         qz = []
         for row in self.data:
-            ts.append(row[3])
-            x.append(float(row[4]))
-            y.append(float(row[5]))
-            z.append(float(row[6]))
-            qw.append(row[7])
-            qx.append(row[8])
-            qy.append(row[9])
-            qz.append(row[10])
+            ts.append(row[0])
+            x.append(float(row[3]))
+            y.append(float(row[4]))
+            z.append(float(row[5]))
+            qw.append(row[6])
+            qx.append(row[7])
+            qy.append(row[8])
+            qz.append(row[9])
         return ts, x, y, z, qw, qx, qy, qz
     
     def get_pos_orient(self):

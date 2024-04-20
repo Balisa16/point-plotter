@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import quaternion
+from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 from scipy.spatial.transform import Rotation
 import math
 
@@ -11,9 +11,9 @@ class Conv:
     def __init__(self):
         pass
 
-    def quaternion_to_euler(self, quaternion):
+    def quaternion_to_euler(self, quat):
 
-        rotation = Rotation.from_quat(quaternion)
+        rotation = Rotation.from_quat(quat)
         
         euler_angles = rotation.as_euler('zyx', degrees=True)
         
@@ -23,17 +23,17 @@ class Conv:
         
         rotation = Rotation.from_euler('zyx', [yaw, pitch, roll], degrees=True)
         
-        quaternion = rotation.as_quat()
+        quat = rotation.as_quat()
         
-        return quaternion
+        return quat
     
     def create_pyramid(self, scale, x, y, z, qw, qx, qy, qz):
         vertices = np.array([
             [0, 0, 0],  # Apex of the pyramid
-            [-.5*scale, .5*scale, 1*scale],  # Base vertex 1
-            [.5*scale, .5*scale, 1*scale],  # Base vertex 2
-            [.5*scale, -.5*scale, 1*scale], # Base vertex 3
-            [-.5*scale, -.5*scale, 1*scale]  # Base vertex 4
+            [-.05*scale, .05*scale, .1*scale],  # Base vertex 1
+            [.05*scale, .05*scale, .1*scale],  # Base vertex 2
+            [.05*scale, -.05*scale, .1*scale], # Base vertex 3
+            [-.05*scale, -.05*scale, .1*scale]  # Base vertex 4
         ])
 
         self.qw = float(qw)
@@ -44,8 +44,6 @@ class Conv:
         cv = Conv()
 
         view_quat = cv.quaternion_to_euler(np.array([self.qz, self.qy, self.qx, self.qw]))
-
-        print(view_quat)
 
         if view_quat[2] < 270:
             view_quat[2] += 90
