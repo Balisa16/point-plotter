@@ -50,6 +50,7 @@ class CSVreader:
         next_pos = (0.0, 0.0, 0.0)
         temp_pos = (0.0, 0.0, 0.0)
         errors:list = []
+        errors2:list = []
         for row in self.data:
             ts.append(row[0])
             current_pos = (float(row[3]), float(row[4]), float(row[5]))
@@ -66,8 +67,10 @@ class CSVreader:
                 next_pos = temp_pos
             dist:float = Nearest.nearest_distance(prev_pos, next_pos, current_pos)
             errors.append(dist)
-            print(row[0], " : ", "{:.4f}".format(dist))
-        print(f"MAE : {np.mean(errors)}")
+            errors2.append(dist**2)
+            print("{:.4f}".format(dist))
+        print("MAE : ", "{:.4f}".format(np.mean(errors)))
+        print("MSE : ", "{:.4f}".format(np.mean(errors2)))
         return ts, x, y, z, qw, qx, qy, qz
     
     def get_pos_orient(self):
