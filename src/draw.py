@@ -8,7 +8,7 @@ class Draw:
         self.ts = ts
         self.x = x
         self.y = y
-        self.z = z
+        self.z = z 
         self.qw = qw
         self.qx = qx
         self.qy = qy
@@ -22,7 +22,8 @@ class Draw:
         ax = fig.add_subplot(111, projection='3d')
 
         # # x, y, z = zip(self.data)
-        ax.plot(self.x, self.y, self.z, marker='o')
+        # ax.plot(self.x, self.y, self.z, marker='o')
+        ax.plot(self.x, self.y, self.z)
         for i in self.data:
             ax.add_collection3d(self.conv.create_pyramid(0.8, i[0], i[1], i[2], i[3], i[4], i[5], i[6]))
         plt.axis('equal')

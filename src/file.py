@@ -1,7 +1,11 @@
 import csv
+from src.distance import Nearest, Pos
+import numpy as np
 
 class PosOrient:
-    def __init__(self, ts, x, y, z, qw, qx, qy, qz):
+    def __init__(self, ts,
+                 x:float, y:float, z:float, 
+                 qw:float, qx:float, qy:float, qz:float):
         self.ts = ts
         self.x = x
         self.y = y
@@ -42,8 +46,13 @@ class CSVreader:
         qx = []
         qy = []
         qz = []
+        prev_pos = (0.0, 0.0, 0.0)
+        next_pos = (0.0, 0.0, 0.0)
+        temp_pos = (0.0, 0.0, 0.0)
+        errors:list = []
         for row in self.data:
             ts.append(row[0])
+            current_pos = (float(row[3]), float(row[4]), float(row[5]))
             x.append(float(row[3]))
             y.append(float(row[4]))
             z.append(float(row[5]))
@@ -51,6 +60,14 @@ class CSVreader:
             qx.append(row[7])
             qy.append(row[8])
             qz.append(row[9])
+            temp_pos = (float(row[10]), float(row[11]), float(row[12]))
+            if temp_pos != next_pos :
+                prev_pos = next_pos
+                next_pos = temp_pos
+            dist:float = Nearest.nearest_distance(prev_pos, next_pos, current_pos)
+            errors.append(dist)
+            print(row[0], " : ", "{:.4f}".format(dist))
+        print(f"MAE : {np.mean(errors)}")
         return ts, x, y, z, qw, qx, qy, qz
     
     def get_pos_orient(self):

@@ -36,8 +36,11 @@ for row in data:
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 
-ax.plot(sim_x, sim_y, sim_z, marker='o')
-ax.plot(target_x, target_y, target_z, marker='o')
+# ax.plot(sim_x, sim_y, sim_z, marker='o')
+# ax.plot(target_x, target_y, target_z, marker='o')
+ax.plot(sim_x, sim_y, sim_z)
+ax.plot(target_x, target_y, target_z)
+
 mng = plt.get_current_fig_manager()
 mng.resize(*mng.window.maxsize())
 plt.axis('equal')
