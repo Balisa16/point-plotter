@@ -1,9 +1,8 @@
-import matplotlib.pyplot as plt
 import numpy as np
 import quaternion
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 from scipy.spatial.transform import Rotation
-import math
+
 
 # Function to create a pyramid
 
@@ -56,7 +55,7 @@ class Conv:
 
         q = np.quaternion(quat_result[0], quat_result[1], quat_result[2], quat_result[3])
         
-        rotated_vertices = quaternion.rotate_vectors(q, vertices)
+        rotated_vertices = np.quaternion.rotate_vectors(q, vertices)
 
         rotated_vertices += np.array([float(x), float(y), float(z)])
 
