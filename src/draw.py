@@ -5,7 +5,8 @@ from src.view_conv import Conv as vw
 from .file import separate_odometry
 
 class Draw:
-    def __init__(self,  scale = 0.1):
+    def __init__(self, title:str = 'Drone Trajectory', scale = 0.1):
+        self.title = title
         self.scale = scale
         self.conv = vw()
         self.fig = plt.figure()
@@ -21,12 +22,16 @@ class Draw:
 
     def draw(self):
         plt.axis('equal')
+        plt.subplots_adjust(left=0, bottom=0, right=1, top=1)
         mng = plt.get_current_fig_manager()
         mng.resize(*mng.window.maxsize())
+        mng.set_window_title(self.title)
 
-        self.ax.set_xlabel('X Axis (m)')
-        self.ax.set_ylabel('Y Axis (m)')
-        self.ax.set_zlabel('Z Axis (m)')
+        self.ax.set_box_aspect([1,1,1])
+
+        self.ax.set_xlabel('x axis (m)')
+        self.ax.set_ylabel('y axis (m)')
+        self.ax.set_zlabel('z axis (m)')
 
         plt.legend()
 
