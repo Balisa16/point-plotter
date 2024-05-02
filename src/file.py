@@ -67,9 +67,9 @@ class CSVreader:
             dist:float = Nearest.nearest_distance(prev_pos, next_pos, current_pos)
             errors.append(dist)
             errors2.append(dist**2)
-            print("{:.4f}".format(dist))
-        print("MAE : ", "{:.4f}".format(np.mean(errors)))
-        print("MSE : ", "{:.4f}".format(np.mean(errors2)))
+            # print("{:.4f}".format(dist))
+        # print("MAE : ", "{:.4f}".format(np.mean(errors)))
+        # print("MSE : ", "{:.4f}".format(np.mean(errors2)))
         last_data = self.data[len(self.data) - 1]
         ground_truth_list.append(Odometry(row[0], 
                                           Position(float(last_data[10]), float(last_data[11]), float(last_data[12])), 
