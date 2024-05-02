@@ -1,5 +1,6 @@
 import math
 import numpy as np
+from src.datatypes import Position
 
 class Pos:
     def __init__(self, x=0.0, y=0.0, z=0.0):
@@ -17,10 +18,10 @@ class Pos:
 
 class Nearest:
     @staticmethod
-    def nearest_distance(point_a, point_b, point_c)->float:
-        a = np.array(point_a)
-        b = np.array(point_b)
-        c = np.array(point_c)
+    def nearest_distance(point_a:Position, point_b:Position, point_c:Position)->float:
+        a = point_a.to_numpy()
+        b = point_b.to_numpy()
+        c = point_c.to_numpy()
         
         # Vektor AC dan AB
         ac = c - a

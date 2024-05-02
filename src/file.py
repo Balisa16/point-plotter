@@ -1,19 +1,27 @@
 import csv
 from src.distance import Nearest, Pos
 import numpy as np
+from .datatypes import *
 
-class PosOrient:
-    def __init__(self, ts,
-                 x:float, y:float, z:float, 
-                 qw:float, qx:float, qy:float, qz:float):
-        self.ts = ts
-        self.x = x
-        self.y = y
-        self.z = z
-        self.qw = qw
-        self.qx = qx
-        self.qy = qy
-        self.qz = qz
+def separate_odometry(data:list):
+    ts:list = []
+    x:list = []
+    y:list = []
+    z:list = []
+    qw:list = []
+    qx:list = []
+    qy:list = []
+    qz:list = []
+    for item in data:
+        ts.append(item.timestamp)
+        x.append(item.position.x)
+        y.append(item.position.y)
+        z.append(item.position.z)
+        qw.append(item.orientation.qw)
+        qx.append(item.orientation.qx)
+        qy.append(item.orientation.qy)
+        qz.append(item.orientation.qz)
+    return ts, x, y, z, qw, qx, qy, qz
 
 class CSVreader:
     def __init__(self, filename):
@@ -38,51 +46,48 @@ class CSVreader:
         return self.header
 
     def get_item(self):
-        ts = []
-        x = []
-        y = []
-        z = []
-        qw = []
-        qx = []
-        qy = []
-        qz = []
-        prev_pos = (0.0, 0.0, 0.0)
-        next_pos = (0.0, 0.0, 0.0)
-        temp_pos = (0.0, 0.0, 0.0)
+        odometry_list:list = []
+        prev_pos = Position(0.0, 0.0, 0.0)
+        next_pos = Position(0.0, 0.0, 0.0)
+        temp_pos = Position(0.0, 0.0, 0.0)
+        temp_odometry = Odometry(0.0, Position(0.0, 0.0, 0.0), Orientation(0.0, 0.0, 0.0, 0.0))
         errors:list = []
         errors2:list = []
+        ground_truth_list:list = []
         for row in self.data:
-            ts.append(row[0])
-            current_pos = (float(row[3]), float(row[4]), float(row[5]))
-            x.append(float(row[3]))
-            y.append(float(row[4]))
-            z.append(float(row[5]))
-            qw.append(row[6])
-            qx.append(row[7])
-            qy.append(row[8])
-            qz.append(row[9])
-            temp_pos = (float(row[10]), float(row[11]), float(row[12]))
+            current_pos = Position(float(row[3]), float(row[4]), float(row[5]))
+            current_orient = Orientation(float(row[6]), float(row[7]), float(row[8]), float(row[9]))
+            current_odometry = Odometry(row[0], current_pos, current_orient)
+            odometry_list.append(current_odometry)
+            temp_pos = Position(float(row[10]), float(row[11]), float(row[12]))
             if temp_pos != next_pos :
                 prev_pos = next_pos
                 next_pos = temp_pos
+                ground_truth_list.append(Odometry(row[0], Position(float(row[10]), float(row[11]), float(row[12])), Orientation(float(row[6]), float(row[7]), float(row[8]), float(row[9]))))
             dist:float = Nearest.nearest_distance(prev_pos, next_pos, current_pos)
             errors.append(dist)
             errors2.append(dist**2)
             print("{:.4f}".format(dist))
         print("MAE : ", "{:.4f}".format(np.mean(errors)))
         print("MSE : ", "{:.4f}".format(np.mean(errors2)))
-        return ts, x, y, z, qw, qx, qy, qz
+        last_data = self.data[len(self.data) - 1]
+        ground_truth_list.append(Odometry(row[0], 
+                                          Position(float(last_data[10]), float(last_data[11]), float(last_data[12])), 
+                                          Orientation(float(last_data[6]), float(last_data[7]), float(last_data[8]), float(last_data[9]))))
+        return odometry_list, ground_truth_list
     
-    def get_pos_orient(self):
-        ret_val = []
+    def get_odometry(self):
+        ret_val:list = []
         for row in self.data:
-            ret_val.append(PosOrient(
-                            float(row[3]),
-                            float(row[4]),
-                            float(row[5]),
-                            float(row[6]),
-                            float(row[7]),
-                            float(row[8]),
-                            float(row[9]),
-                            float(row[10])))
+            ret_val.append(Odometry(
+                            row[3],
+                            Position(
+                                float(row[3]),
+                                float(row[4]),
+                                float(row[5])),
+                            Orientation(
+                                float(row[6]),
+                                float(row[7]),
+                                float(row[8]),
+                                float(row[9]))))
         return ret_val

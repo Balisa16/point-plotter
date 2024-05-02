@@ -2,36 +2,30 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 from src.view_conv import Conv as vw
+from .file import separate_odometry
 
 class Draw:
-    def __init__(self, ts, x, y, z, qw, qx, qy, qz, scale = 0.1):
-        self.ts = ts
-        self.x = x
-        self.y = y
-        self.z = z 
-        self.qw = qw
-        self.qx = qx
-        self.qy = qy
-        self.qz = qz
+    def __init__(self,  scale = 0.1):
         self.scale = scale
-        self.data = list(zip(self.x, self.y, self.z, self.qw, self.qx, self.qy, self.qz))
         self.conv = vw()
+        self.fig = plt.figure()
+        self.ax = self.fig.add_subplot(111, projection='3d')
+    
+    def append(self, odometry_list:list, color='red', marker='.', draw_camera=False):
+        ts, x, y, z , qw, qx, qy, qz = separate_odometry(odometry_list)
+        data = list(zip(x, y, z, qw, qx, qy, qz))
+        self.ax.plot(x, y, z, marker=marker, color=color)
+        if draw_camera:
+            for i in data:
+                self.ax.add_collection3d(self.conv.create_pyramid(0.8, i[0], i[1], i[2], i[3], i[4], i[5], i[6]))
 
     def draw(self):
-        fig = plt.figure()
-        ax = fig.add_subplot(111, projection='3d')
-
-        # # x, y, z = zip(self.data)
-        # ax.plot(self.x, self.y, self.z, marker='o')
-        ax.plot(self.x, self.y, self.z)
-        for i in self.data:
-            ax.add_collection3d(self.conv.create_pyramid(0.8, i[0], i[1], i[2], i[3], i[4], i[5], i[6]))
         plt.axis('equal')
         mng = plt.get_current_fig_manager()
         mng.resize(*mng.window.maxsize())
 
-        ax.set_xlabel('X Axis')
-        ax.set_ylabel('Y Axis')
-        ax.set_zlabel('Z Axis')
+        self.ax.set_xlabel('X Axis')
+        self.ax.set_ylabel('Y Axis')
+        self.ax.set_zlabel('Z Axis')
 
         plt.show()
