@@ -1,6 +1,6 @@
 # Point Plotter
 
-Pointplotter for drone trajectory
+Simple point plotter for drone trajectory
 ```
 git clone https://github.com/Balisa16/PointPlotter.git pointplotter
 cd pointplotter
