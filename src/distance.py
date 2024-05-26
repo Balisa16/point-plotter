@@ -39,4 +39,8 @@ class Nearest:
         # Jarak minimum
         distance = normal_length
         
-        return distance
+        error_x = c[0] - (a[0] + projection[0])
+        error_y = c[1] - (a[1] + projection[1])
+        error_z = c[2] - (a[2] + projection[2])
+        
+        return distance, error_x, error_y, error_z

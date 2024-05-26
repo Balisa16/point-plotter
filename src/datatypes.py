@@ -16,6 +16,9 @@ class Position:
 
     def to_numpy(self):
         return np.array([self.x, self.y, self.z])
+    
+    def __str__(self) -> str:
+        return f'({self.x}, {self.y}, {self.z})'
 
 class Orientation:
     def __init__(self, qw=0.0, qx=0.0, qy=0.0, qz=0.0):

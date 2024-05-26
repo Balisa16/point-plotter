@@ -53,7 +53,12 @@ class CSVreader:
         temp_odometry = Odometry(0.0, Position(0.0, 0.0, 0.0), Orientation(0.0, 0.0, 0.0, 0.0))
         errors:list = []
         errors2:list = []
+        x_error:list = []
+        y_error:list = []
+        z_error:list = []
         ground_truth_list:list = []
+        pos_list:list = []
+        _cnt = 0
         for row in self.data:
             current_pos = Position(float(row[3]), float(row[4]), float(row[5]))
             current_orient = Orientation(float(row[6]), float(row[7]), float(row[8]), float(row[9]))
@@ -61,12 +66,18 @@ class CSVreader:
             odometry_list.append(current_odometry)
             temp_pos = Position(float(row[10]), float(row[11]), float(row[12]))
             if temp_pos != next_pos :
+                pos_list.append([_cnt, temp_pos])
                 prev_pos = next_pos
                 next_pos = temp_pos
                 ground_truth_list.append(Odometry(row[0], Position(float(row[10]), float(row[11]), float(row[12])), Orientation(float(row[6]), float(row[7]), float(row[8]), float(row[9]))))
-            dist:float = Nearest.nearest_distance(prev_pos, next_pos, current_pos)
+            dist, x_err, y_err, z_err = Nearest.nearest_distance(prev_pos, next_pos, current_pos)
+            # print("{:.4f}".format(x_err), "{:.4f}".format(y_err), "{:.4f}".format(z_err))
+            x_error.append(x_err)
+            y_error.append(y_err)
+            z_error.append(z_err)
             errors.append(dist)
             errors2.append(dist**2)
+            _cnt += 1
             # print("{:.4f}".format(dist))
         # print("MAE : ", "{:.4f}".format(np.mean(errors)))
         # print("MSE : ", "{:.4f}".format(np.mean(errors2)))
@@ -74,7 +85,7 @@ class CSVreader:
         ground_truth_list.append(Odometry(row[0], 
                                           Position(float(last_data[10]), float(last_data[11]), float(last_data[12])), 
                                           Orientation(float(last_data[6]), float(last_data[7]), float(last_data[8]), float(last_data[9]))))
-        return odometry_list, ground_truth_list
+        return odometry_list, ground_truth_list, x_error, y_error, z_error, errors, pos_list
     
     def get_odometry(self):
         ret_val:list = []

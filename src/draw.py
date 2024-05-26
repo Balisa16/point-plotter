@@ -10,7 +10,7 @@ class Draw:
         self.scale = scale
         self.conv = vw()
         self.fig = plt.figure()
-        self.ax = self.fig.add_subplot(111, projection='3d')
+        self.ax = self.fig.add_subplot(2, 2, 1, projection='3d')
     
     def append(self, line_name:str, odometry_list:list, color='red', marker='.', draw_camera=False):
         ts, x, y, z , qw, qx, qy, qz = separate_odometry(odometry_list)
@@ -19,20 +19,21 @@ class Draw:
         if draw_camera:
             for i in data:
                 self.ax.add_collection3d(self.conv.create_pyramid(0.8, i[0], i[1], i[2], i[3], i[4], i[5], i[6]))
+    
+    def get_fig(self):
+        return self.fig
 
     def draw(self):
-        plt.axis('equal')
-        plt.subplots_adjust(left=0, bottom=0, right=1, top=1)
+        # plt.axis('equal')
+        # plt.subplots_adjust(left=0, bottom=0, right=1, top=1)
         mng = plt.get_current_fig_manager()
         mng.resize(*mng.window.maxsize())
         mng.set_window_title(self.title)
 
-        self.ax.set_box_aspect([1,1,1])
+        # self.ax.set_box_aspect([1,1,1])
 
         self.ax.set_xlabel('x axis (m)')
         self.ax.set_ylabel('y axis (m)')
         self.ax.set_zlabel('z axis (m)')
-
-        plt.legend()
 
         plt.show()
