@@ -36,4 +36,6 @@ class Draw:
         self.ax.set_ylabel('y axis (m)')
         self.ax.set_zlabel('z axis (m)')
 
+        self.ax.legend()
+
         plt.show()
