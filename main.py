@@ -1,6 +1,8 @@
 import src.file as fl
 import src.draw as dr
 import numpy as np
+import pandas as pd
+from statsmodels.tsa.arima.model import ARIMA
 
 def moving_average(data, window_size):
     moving_averages = []
@@ -13,6 +15,13 @@ def moving_average(data, window_size):
 file_path = 'docs/track.csv'
 rd = fl.CSVreader(file_path)
 odometry_list, ground_truth_list, x_error, y_error, z_error, vector_error, pos_list = rd.get_item()
+
+# ts = rd.get_ts()
+# time_series_data = pd.Series(vector_error, index=ts)
+# arima_model = ARIMA(time_series_data, order=(1, 1, 1))
+# arima_result = arima_model.fit()
+# forecast_steps = 10
+# arima_forecast = arima_result.forecast(steps=forecast_steps)
 
 draw = dr.Draw()
 draw.append('Drone Trajectory', odometry_list)
