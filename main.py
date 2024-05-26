@@ -28,8 +28,13 @@ ax3 = fig.add_subplot(2, 2, 3)
 ax3.plot(range(len(total_error)), total_error, color='g', label='|x| + |y| + |z|')
 ax3.plot(range(len(vector_error)), vector_error, color='black', label='ground-truth error')
 
-for index, (position_index, _) in enumerate(pos_list):
-    ax3.text(position_index, vector_error[index], '\u2022', fontdict=dict(color='r', weight='bold'), va='center')
+for _dt in pos_list:
+    format_number = lambda num: int(num) if num % 1 == 0 else round(num, 1)
+    ax3.annotate(f"\u2022 ({format_number(_dt[1].x)},{format_number(_dt[1].y)},{format_number(_dt[1].z)})", (_dt[0], vector_error[_dt[0]]), rotation=90, color='r', weight='bold')
+
+
+# for index, (position_index, _) in enumerate(pos_list):
+#     ax3.text(position_index, vector_error[index], '\u2022', fontdict=dict(color='r', weight='bold'), va='center')
 
 
 ax3.set_ylabel('')
