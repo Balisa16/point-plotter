@@ -12,7 +12,7 @@ def moving_average(data, window_size):
         moving_averages.append(average)
     return moving_averages
 
-file_path = 'docs/track.csv'
+file_path = 'docs/track2.csv'
 rd = fl.CSVreader(file_path)
 odometry_list, ground_truth_list, x_error, y_error, z_error, vector_error, pos_list = rd.get_item()
 
@@ -29,9 +29,9 @@ draw.append('Planning Trajectory' ,ground_truth_list, color='green')
 fig = draw.get_fig()
 
 ax2 = fig.add_subplot(2, 2, 2)
-ax2.plot(range(len(x_error)), x_error, color='r', label='x-error')
-ax2.plot(range(len(y_error)), y_error, color='g', label='y-error')
-ax2.plot(range(len(z_error)), z_error, color='b', label='z-error')
+ax2.plot(range(len(x_error)), x_error, color='r', label='x-error (m)')
+ax2.plot(range(len(y_error)), y_error, color='g', label='y-error (m)')
+ax2.plot(range(len(z_error)), z_error, color='b', label='z-error (m)')
 ax2.set_ylabel('error (m)')
 ax2.legend()
 ax2.set_ylim(bottom=-0.5, top=1)
