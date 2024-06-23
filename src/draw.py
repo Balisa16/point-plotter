@@ -38,4 +38,5 @@ class Draw:
 
         self.ax.legend()
 
+        plt.tight_layout()
         plt.show()

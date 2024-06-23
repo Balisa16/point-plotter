@@ -33,12 +33,13 @@ class CSVreader:
         self.ts:list = []
         try:
             with open(self.filename, 'r') as file:
-                with open('reduced.csv', 'a') as reduced_file:
-                    csv_reader = csv.reader(file)
-                    self.header = next(csv_reader)
-                    for i, row in enumerate(csv_reader):
-                        if i%5 == 0:
-                            reduced_file.write(row[2] + ',' + row[3] + ',' + row[4] + ',' + row[5] + ',' + row[10] + ',' + row[11] + ',' + row[12] + '\n')
+                csv_reader = csv.reader(file)
+                self.header = next(csv_reader)
+                prev_time:float = 0
+                for row in csv_reader:
+                    if abs(float(row[2]) - prev_time) > 0.001:
+                        prev_time = float(row[2])
+                    #     reduced_file.write(row[2] + ',' + row[3] + ',' + row[4] + ',' + row[5] + ',' + row[10] + ',' + row[11] + ',' + row[12] + '\n')
                         self.ts.append(float(row[2]))
                         self.data.append(row)
         except FileNotFoundError:
@@ -61,8 +62,7 @@ class CSVreader:
         prev_pos = Position(0.0, 0.0, 0.0)
         next_pos = Position(0.0, 0.0, 0.0)
         temp_pos = Position(0.0, 0.0, 0.0)
-        temp_odometry = Odometry(0.0, Position(0.0, 0.0, 0.0), Orientation(0.0, 0.0, 0.0, 0.0))
-        
+
         errors:list = []
         errors2:list = []
         
@@ -77,34 +77,40 @@ class CSVreader:
         min_dist = float('inf')
         traj_length = 0.0
         
-        for i, row in enumerate(self.data):
-            current_pos = Position(float(row[3]), float(row[4]), float(row[5]))
-            current_orient = Orientation(float(row[6]), float(row[7]), float(row[8]), float(row[9]))
-            current_odometry = Odometry(row[0], current_pos, current_orient)
-            odometry_list.append(current_odometry)
-            temp_pos = Position(float(row[10]), float(row[11]), float(row[12]))
-            
-            if temp_pos != next_pos :
-                pos_list.append([_cnt, temp_pos])
-                traj_length += math.sqrt((temp_pos.x - next_pos.x)**2 + (temp_pos.y - next_pos.y)**2 + (temp_pos.z - next_pos.z)**2)
-                prev_pos = next_pos
-                next_pos = temp_pos
-                ground_truth_list.append(Odometry(row[0], Position(float(row[10]), float(row[11]), float(row[12])), Orientation(float(row[6]), float(row[7]), float(row[8]), float(row[9]))))
-            
-            dist, x_err, y_err, z_err = Nearest.nearest_distance(prev_pos, next_pos, current_pos)
+        with open('reduced.csv', 'a') as reduced_file:
+            prev_ts:float = 0
+            for row in self.data:
+                current_pos = Position(float(row[3]), float(row[4]), float(row[5]))
+                current_orient = Orientation(float(row[6]), float(row[7]), float(row[8]), float(row[9]))
+                current_odometry = Odometry(row[0], current_pos, current_orient)
+                odometry_list.append(current_odometry)
+                temp_pos = Position(float(row[10]), float(row[11]), float(row[12]))
+                
+                if temp_pos != next_pos :
+                    pos_list.append([_cnt, temp_pos])
+                    traj_length += math.sqrt((temp_pos.x - next_pos.x)**2 + (temp_pos.y - next_pos.y)**2 + (temp_pos.z - next_pos.z)**2)
+                    prev_pos = next_pos
+                    next_pos = temp_pos
+                    ground_truth_list.append(Odometry(row[0], Position(float(row[10]), float(row[11]), float(row[12])), Orientation(float(row[6]), float(row[7]), float(row[8]), float(row[9]))))
+                
+                dist, x_err, y_err, z_err = Nearest.nearest_distance(prev_pos, next_pos, current_pos)
 
-            max_dist = max(max_dist, dist)
-            min_dist = min(min_dist, dist)
+                # if abs(float(row[2]) - prev_ts > 0.001):
+                #     prev_ts = float(row[2])
+                reduced_file.write(row[2] + ',' + row[3] + ',' + row[4] + ',' + row[5] + ',' + row[10] + ',' + row[11] + ',' + row[12] + ',' + str(dist) + '\n')
 
-            x_error.append(x_err)
-            y_error.append(y_err)
-            z_error.append(z_err)
+                max_dist = max(max_dist, dist)
+                min_dist = min(min_dist, dist)
 
-            errors.append(dist)
-            errors2.append(dist**2)
-            _cnt += 1
-            if i%5 == 0:
-                print("{:.4f}".format(dist))
+                x_error.append(x_err)
+                y_error.append(y_err)
+                z_error.append(z_err)
+
+                errors.append(dist)
+                errors2.append(dist**2)
+                _cnt += 1
+            # if i%5 == 0:
+            #     print("{:.4f}".format(dist))
         print("MAE : ", "{:.4f}".format(np.mean(errors)))
         print("MSE : ", "{:.4f}".format(np.mean(errors2)))
         print("Max. Error : ", "{:.4f}".format(max_dist))

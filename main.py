@@ -29,11 +29,12 @@ draw.append('Planning Trajectory' ,ground_truth_list, color='green')
 fig = draw.get_fig()
 
 ax2 = fig.add_subplot(2, 2, 2)
-ax2.plot(range(len(x_error)), x_error, color='r', label='x-error (m)')
-ax2.plot(range(len(y_error)), y_error, color='g', label='y-error (m)')
-ax2.plot(range(len(z_error)), z_error, color='b', label='z-error (m)')
+ax2.plot(range(len(x_error)), x_error, color='r', label=r'$e_{\mathrm{x}}$')
+ax2.plot(range(len(y_error)), y_error, color='g', label=r'$e_{\mathrm{y}}$')
+ax2.plot(range(len(z_error)), z_error, color='b', label=r'$e_{\mathrm{x}}$')
 ax2.set_ylabel('error (m)')
 ax2.legend()
+ax2.set_title('Trajectory Axis Error', loc='center', pad=5)
 ax2.set_ylim(bottom=-0.5, top=1)
 
 total_error:list = []
@@ -41,7 +42,7 @@ for i in range(len(x_error)):
     total_error.append(abs(x_error[i]) + abs(y_error[i]) + abs(z_error[i]))
 
 ax3 = fig.add_subplot(2, 2, 3)
-ax3.plot(range(len(total_error)), total_error, color='g', label='|e_x| + |e_y| + |e_z|')
+ax3.plot(range(len(total_error)), total_error, color='g', label=r'|$e_{\mathrm{x}}$| + |$e_{\mathrm{y}}$| + |$e_{\mathrm{z}}$|')
 ax3.plot(range(len(vector_error)), vector_error, color='black', label='Ground-truth error')
 
 for _dt in pos_list:
@@ -53,6 +54,7 @@ for _dt in pos_list:
 
 ax3.set_ylabel('error (m)')
 ax3.legend()
+ax3.set_title('Cumulative Trajectory Error', loc='center', pad=5)
 ax3.set_ylim(bottom=-0.5, top=1)
 
 window_size = 10
