@@ -4,6 +4,7 @@ import numpy as np
 from .datatypes import *
 import math
 import pandas as pd
+import os
 
 def separate_odometry(data:list):
     ts:list = []
@@ -76,17 +77,21 @@ class CSVreader:
         max_dist = 0.0
         min_dist = float('inf')
         traj_length = 0.0
-        
-        with open('reduced.csv', 'a') as reduced_file:
+        f_name = 'reduced.csv'
+
+        if os.path.exists('reduced.csv'):
+            os.remove('reduced.csv')
+
+        with open(f_name, 'a') as reduced_file:
             prev_ts:float = 0
-            for row in self.data:
+            for i, row in enumerate(self.data):
                 current_pos = Position(float(row[3]), float(row[4]), float(row[5]))
                 current_orient = Orientation(float(row[6]), float(row[7]), float(row[8]), float(row[9]))
                 current_odometry = Odometry(row[0], current_pos, current_orient)
                 odometry_list.append(current_odometry)
                 temp_pos = Position(float(row[10]), float(row[11]), float(row[12]))
                 
-                if temp_pos != next_pos :
+                if temp_pos != next_pos:
                     pos_list.append([_cnt, temp_pos])
                     traj_length += math.sqrt((temp_pos.x - next_pos.x)**2 + (temp_pos.y - next_pos.y)**2 + (temp_pos.z - next_pos.z)**2)
                     prev_pos = next_pos

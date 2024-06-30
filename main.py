@@ -12,7 +12,7 @@ def moving_average(data, window_size):
         moving_averages.append(average)
     return moving_averages
 
-file_path = 'docs/track2.csv'
+file_path = 'docs/track28.csv'
 rd = fl.CSVreader(file_path)
 odometry_list, ground_truth_list, x_error, y_error, z_error, vector_error, pos_list = rd.get_item()
 
